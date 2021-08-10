@@ -146,22 +146,27 @@
       }
 
       h1 {
-        font-weight: $fontWeight-normal;
-        @include x-rem(font-size, 20px);
-        margin: 0 0 12px;
+        font-family: $font-family-title;
+        font-weight: $fontWeight-semibold;
+        font-style: normal;
+        letter-spacing: 0.01rem;
+        line-height: 27px;
+        font-size: 20px;
+        margin: 0 0 50px;
 
         span {
           font-weight: $fontWeight-bold;
           @include x-rem(font-size, 16px);
 
           @media (min-width: $bp-m) {
-            @include x-rem(font-size, 20px);
+            @include x-rem(font-size, 16px);
           }
         }
       }
 
       p {
         max-width: none;
+        margin: 0;
       }
 
       .event-year {
@@ -212,9 +217,9 @@
             overflow: hidden;
             margin: 0 12px 12px 0;
             background-color: white;
-            -webkit-box-shadow: 0px 10px 30px -5px rgba($color-primary, 0.5);
-            -moz-box-shadow: 0px 10px 30px -5px rgba($color-primary, 0.5);
-            box-shadow: 0px 10px 30px -5px rgba($color-primary, 0.5);
+            //-webkit-box-shadow: 0px 10px 30px -5px rgba($color-primary, 0.5);
+            //-moz-box-shadow: 0px 10px 30px -5px rgba($color-primary, 0.5);
+            //box-shadow: 0px 10px 30px -5px rgba($color-primary, 0.5);
 
             @media (min-width: $bp-mw) {
               margin: 0 24px 24px 0;
@@ -256,14 +261,17 @@
     }
 
     .greetings-desktop {
+      font-family: $font-family;
+      font-size: 16px;
       display: inline;
       @media (max-width: $bp-m) {
         display: none;
       }
-      font-family: $font-family-title;
     }
 
     .greetings-mobile {
+      font-family: $font-family;
+      font-size: 16px;
       display: none;
       @media (max-width: $bp-m) {
         display: inline;
@@ -429,9 +437,9 @@
     overflow: hidden;
     margin: 0 12px 12px 0;
     background-color: $color-primary;
-    -webkit-box-shadow: 0px 10px 30px -5px rgba($color-primary, 0.5);
-    -moz-box-shadow: 0px 10px 30px -5px rgba($color-primary, 0.5);
-    box-shadow: 0px 10px 30px -5px rgba($color-primary, 0.5);
+    //-webkit-box-shadow: 0px 10px 30px -5px rgba($color-primary, 0.5);
+    //-moz-box-shadow: 0px 10px 30px -5px rgba($color-primary, 0.5);
+    //box-shadow: 0px 10px 30px -5px rgba($color-primary, 0.5);
 
     @media (min-width: $bp-mw) {
       margin: 0 24px 24px 0;

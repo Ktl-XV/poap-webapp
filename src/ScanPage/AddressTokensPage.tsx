@@ -157,7 +157,7 @@ export const AddressTokensPage: FC<RouteComponentProps> = ({ location, match }) 
   const renderTokens = () => {
     return (
       <>
-        <p>These are the events you have attended in the past</p>
+        <h1>These are the events you have attended in the past</h1>
         {getTokensByYear().map(({ year, tokens }, i) => (
           <div key={year} className={classNames('event-year', tokens.length === 0 && 'empty-year')}>
             <h2>{year}</h2>
@@ -204,20 +204,20 @@ export const AddressTokensPage: FC<RouteComponentProps> = ({ location, match }) 
       <div className="container">
         <div className="content-event years" data-aos="fade-up" data-aos-delay="300">
           {!error && !loading && (
-            <h1>
+            <p>
               {ens ? (
                 <>
-                  Hey <span>{ens}!</span> ({address && shortAddress(address)})
+                  Hey, <span>{ens}!</span> ({address && shortAddress(address)})
                 </>
               ) : (
                 <>
-                  <div className={'greetings-desktop'}>Hey {address}!</div>
+                  <div className={'greetings-desktop'}>Hey, {address}</div>
                   <div className={'greetings-mobile'}>
-                    Hey {address && !isValidEmail(address) ? shortAddress(address) : address}!
+                    Hey, {address && !isValidEmail(address) ? shortAddress(address) : address}
                   </div>
                 </>
               )}
-            </h1>
+            </p>
           )}
 
           {error && !loading && (
@@ -247,8 +247,8 @@ export const AddressTokensPage: FC<RouteComponentProps> = ({ location, match }) 
           {!error && !loading && address && isValidEmail(address) && tokens && tokens.length > 0 && (
             <div className="scan-email-badge-container">
               <span className="scan-email-badge">
-                <b>Note:</b> These badges are not in an Ethereum wallet yet. When you're ready to claim your POAPs, please click on
-                the button below
+                <b>Note:</b> These badges are not in an Ethereum wallet yet. When you're ready to claim your POAPs,
+                please click on the button below
               </span>
               <div className="scan-email-badge-button-container">
                 <button onClick={handleOpenRedeemModalClick} className="btn btn-primary">

@@ -7,6 +7,7 @@ import { connectWallet } from '../poap-eth';
 import { resolveENS, getENSFromAddress } from '../api';
 import { isValidAddress, isValidEmail } from '../lib/helpers';
 import { AddressOrEmailSchema } from '../lib/schemas';
+import PoapLogo from "../images/POAP.svg";
 
 type ChooseAddressPageProps = {
   onAccountDetails: (addressOrENS: string, address: string) => void;
@@ -117,6 +118,7 @@ export const ChooseAddressPage: React.FC<ChooseAddressPageProps> = ({ onAccountD
     <main id="site-main" role="main" className="app-content">
       <div className="container">
         <div className="content-event" data-aos="fade-up" data-aos-delay="300">
+          <img src={PoapLogo} alt={'poap logo'} className={'scan-logo'} />
           <p>
             Welcome to <span> POAP scan</span>, your gateway to the <span>POAP ecosystem</span>.
             <br />
