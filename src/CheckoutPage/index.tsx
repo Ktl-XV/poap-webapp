@@ -4,7 +4,6 @@ import { parse, isAfter } from 'date-fns';
 import { useHistory } from 'react-router-dom';
 
 /* UI Components */
-import { ScanFooter, ScanHeader } from '../ScanPage';
 import TokenDisplay from './components/TokenDisplay';
 import CheckoutMessage from './components/CheckoutMessage';
 import CheckoutForm from './components/CheckoutForm';
@@ -13,6 +12,8 @@ import { Loading } from '../components/Loading';
 
 /* API & Types */
 import { Checkout, getCheckout } from '../api';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
 
 type CheckoutPageProps = {
   fancyId: string;
@@ -47,7 +48,7 @@ const CheckoutPage: FC<RouteComponentProps<CheckoutPageProps>> = ({ location, ma
 
   const getLocalStorage = () => {
     let checkoutsString = localStorage.getItem(CHECKOUTS_KEY);
-    let checkouts: {[id: string]: string} = {};
+    let checkouts: { [id: string]: string } = {};
     if (checkoutsString) {
       checkouts = JSON.parse(checkoutsString);
     }
@@ -132,11 +133,11 @@ const CheckoutPage: FC<RouteComponentProps<CheckoutPageProps>> = ({ location, ma
 
   return (
     <div className="checkout-page">
-      <ScanHeader sectionName="" />
+      <Header sectionName="" />
       <main id="site-main" role="main" className="app-content">
         <div className="container">{renderBody()}</div>
       </main>
-      <ScanFooter path="home" />
+      <Footer path="home" />
     </div>
   );
 };

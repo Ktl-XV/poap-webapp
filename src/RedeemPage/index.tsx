@@ -8,7 +8,6 @@ import delve from 'dlv';
 import { LAYERS } from '../lib/constants';
 
 // components
-import { ScanHeader, ScanFooter } from '../ScanPage';
 import { SubmitButton } from '../components/SubmitButton';
 
 // lib
@@ -20,6 +19,8 @@ import { EmailClaim, redeemWithEmail, TokenInfo, getTokensFor, getEmailClaim } f
 /* Assets */
 import LoadingSpinner from '../images/loading.svg';
 import Transaction from '../components/Transaction';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
 
 type RedeemFormValues = {
   address: string;
@@ -45,10 +46,10 @@ export const RedeemPage: FC<RouteComponentProps> = ({ match }) => {
   // effects
   useEffect(() => {
     getClaim();
-  }, []) // eslint-disable-line
+  }, []); // eslint-disable-line
   useEffect(() => {
     if (claim) getTokens();
-  }, [claim]) // eslint-disable-line
+  }, [claim]); // eslint-disable-line
 
   // methods
   const getClaim = async () => {
@@ -178,9 +179,9 @@ export const RedeemPage: FC<RouteComponentProps> = ({ match }) => {
 
   return (
     <div className="landing">
-      <ScanHeader sectionName="Claim" />
+      <Header sectionName="Claim" />
       <div className="redeem-content-container">{body}</div>
-      <ScanFooter path="home" />
+      <Footer path="home" />
     </div>
   );
 };

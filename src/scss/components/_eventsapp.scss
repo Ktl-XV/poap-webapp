@@ -51,6 +51,7 @@
     h1 {
       margin: 0 0 15px 0;
     }
+
     .logo-event {
       width: 160px;
       height: 160px;
@@ -62,114 +63,51 @@
   }
 }
 
+.scan-cover {
+  height: 179px;
+}
+
 /* ******************************************************
    Footer
    ****************************************************** */
 
-.footer-events {
+footer {
   width: 100%;
-  padding: 80px 0 0;
+  margin-top: auto;
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
 
-  &.normal-background {
-    background-color: $bg-color;
-  }
-
-  &.secondary-background {
-    background-color: $color-secondary;
-  }
-
-  &.white-background {
-    background-color: white;
-  }
-
-  &.violet-bg {
-    z-index: 1;
-    position: relative;
-    padding: 50px 0 0 0;
-    &:after {
-      content: '';
-      position: absolute;
-      top: -1px;
-      right: 0;
-      left: 0;
-      bottom: 0;
-      background-color: $color-secondary;
-      z-index: -1;
-    }
-  }
-
-  .image-footer {
-    float: left;
+  .cover {
+    position: absolute;
+    z-index: -1;
     width: 100%;
-    overflow: hidden;
-
-    img {
-      width: 102%;
-      max-width: none;
-      margin: 0 0 0 -1%;
-    }
+    height: 295px;
   }
 
-  .footer-content {
-    background-color: #9289FF;
-    padding: 0 0 30px 0;
-    float: left;
-    width: 100%;
-    margin: -2px 0 0 0;
+  .footer-container {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
 
-    .decoration {
-      width: 100%;
-      max-width: 100px;
-      margin: -80px auto 10px;
-      display: block;
-
-      @media (min-width: $bp-m) {
-        margin: -60px auto 10px;
-      }
-      @media (min-width: $bp-l) {
-        margin: -60px auto 10px;
-      }
-
-      &.big-picture {
-        max-width: 330px;
-        margin: -120px auto 10px;
-
-        @media (min-width: $bp-m) {
-          margin: -100px auto 10px;
-        }
-        @media (min-width: $bp-l) {
-          margin: -105px auto 10px;
-        }
-      }
+    .footer-logo {
+      width: 68px;
+      margin: 0 auto;
+      padding-bottom: 24px;
+      padding-top: 31px;
     }
 
-    p {
-      color: $color-invert;
-      text-align: center;
-      margin: 0 auto 5px;
-      font-weight: $fontWeight-normal;
-
-      &:last-child {
-        margin: 0 auto;
-      }
+    .footer-text {
+      color: $color-primary;
+      font-family: $font-family-title;
     }
 
-    .eth-branding {
-      text-align: center;
-      padding: 20px 0;
-      img {
-        width: 150px;
-      }
-    }
+    .footer-communities {
+      flex-direction: row;
+      margin: 0 auto;
 
-    .social-icons {
-      text-align: center;
-      padding: 30px 0;
       a {
-        margin: 0 10px;
-        img {
-          width: 30px;
-        }
+        padding: 0 8px;
       }
     }
   }
@@ -359,7 +297,7 @@
       background: none;
       position: relative;
 
-      .side-banner{
+      .side-banner {
         z-index: 2;
       }
 
@@ -567,6 +505,7 @@
         padding: 25px 0;
         font-family: $font-family-narrow;
         color: $color-medium-violet;
+
         span,
         a {
           text-decoration: underline;
@@ -579,6 +518,7 @@
       .layer-checkbox {
         cursor: pointer;
         user-select: none;
+
         svg {
           position: relative;
           top: 2px;
@@ -627,6 +567,7 @@
       &.claim-delegated {
         .text-info {
           max-width: inherit;
+
           p {
             margin: 0 auto 0.5rem;
             max-width: inherit;
@@ -678,6 +619,7 @@
     .tx-detail-cell {
       text-align: center;
       padding: 5px;
+
       .tx-detail-cell-title {
         text-align: center;
         text-transform: uppercase;
@@ -685,9 +627,11 @@
         color: $color-grey;
         margin-bottom: 20px;
       }
+
       &:first-child {
         border-right: 1px solid rgb(226, 232, 240);
       }
+
       a {
         img {
           margin-left: 5px;
@@ -721,6 +665,7 @@
   &.info-error {
     background: $tx-error-background;
     color: $tx-error-color;
+
     img {
       width: 12px;
       left: 13px;
@@ -731,6 +676,7 @@
   &.info-success {
     background: $tx-success-background;
     color: $tx-success-color;
+
     img {
       width: 12px;
       left: 13px;
@@ -741,9 +687,11 @@
 
 .help-modal {
   text-align: center;
+
   p {
     max-width: inherit;
   }
+
   .close-modal {
     margin-top: 20px;
   }
@@ -847,6 +795,7 @@
     a {
       font-size: 24px;
     }
+
     @media (max-width: $bp-m) {
       display: none;
     }
@@ -863,12 +812,14 @@
   max-width: 600px;
   margin: 0 auto;
   padding-top: 50px;
+
   div.divider {
     margin-bottom: 25px;
     width: 100%;
     border-top: 1px solid $color-grey;
   }
-  p{
+
+  p {
     text-align: center;
 
     &.success {
@@ -879,6 +830,7 @@
 
   .tx-detail {
     width: 100%;
+
     .tx-detail-box {
       background: white;
     }

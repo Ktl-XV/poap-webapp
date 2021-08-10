@@ -7,7 +7,6 @@ import { slide as Menu } from 'react-burger-menu';
 import { AuthContext, authClient } from 'auth';
 
 /* Assets */
-import PoapLogo from 'images/POAP.svg';
 import Calendar from 'images/calendar.svg';
 import Qr from 'images/qr-code.svg';
 import Requests from 'images/request.svg';
@@ -30,6 +29,7 @@ import { Deliveries } from './Deliveries';
 import { AdminLogsPage } from './AdminLogsPage';
 import { DeliveriesRequests } from './DeliveriesRequests';
 import { WebsitesManage } from './Websites/WebsitesManage';
+import Header from '../components/Header';
 
 export const MintersPage = () => <div> This is a MintersPage </div>;
 
@@ -176,18 +176,7 @@ const AdminLogsPageWithAuthentication = withAuthentication(AdminLogsPage);
 
 export const BackOffice: React.FC = () => (
   <>
-    <header id="site-header" role="banner">
-      <div className="container">
-        <div className="col-xs-6 col-sm-6 col-md-6">
-          <Link to="/admin" className="logo">
-            <img src={PoapLogo} alt="POAP" />
-          </Link>
-        </div>
-        <div className="col-xs-6 col-sm-6 col-md-6">
-          <p className="page-title">BackOffice</p>
-        </div>
-      </div>
-    </header>
+    <Header sectionName={'Backoffice'} />
     <main className="app-content backoffice">
       <div className="container">
         <Switch>
