@@ -20,6 +20,15 @@ form {
     }
   }
 
+  input[type='text'],
+  input[type='email'],
+  input[type='file'],
+  textarea,
+  select {
+    border: 1px solid $color-primary;
+    border-radius: 6px;
+  }
+
   ::-webkit-input-placeholder {
     /* Chrome */
     color: rgba($color-base, 0.5);
@@ -66,7 +75,6 @@ div {
       outline-color: $color-primary;
       padding: 12px;
       box-shadow: none;
-      border: 2px solid $color-invert;
       background: $color-invert;
       transition: right 0.2s ease-out;
       border-radius: 4px;
@@ -119,6 +127,11 @@ div {
       }
     }
   }
+
+  input {
+    border: 1px solid $color-primary;
+    border-radius: 6px;
+  }
 }
 
 .checkbox-field {
@@ -151,8 +164,8 @@ input[type='file'] {
   height: 50px;
   padding: 12px;
   box-shadow: none;
-  border: 2px solid $color-invert;
   background: $color-invert;
+  border: 1px solid $color-primary;
   transition: right 0.2s ease-out;
   border-radius: 4px;
   margin: 0 auto 16px;
