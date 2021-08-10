@@ -10,6 +10,8 @@ import Header from '../components/Header';
 import ScanCover from '../images/scan-cover.svg';
 import Footer from '../components/Footer';
 
+import PoapLogo from '../images/POAP.svg';
+
 export const ScanPage: React.FC<RouteComponentProps> = ({ match, history, location }) => {
   const showBadges = useCallback(
     (addressOrENS: string, address: string) => {
@@ -30,6 +32,7 @@ export const ScanPage: React.FC<RouteComponentProps> = ({ match, history, locati
     <div className="landing">
       <Header sectionName="Scan" />
       <img src={ScanCover} alt={'scan cover'} className={'scan-cover'} />
+      <img src={PoapLogo} alt={'poap logo'} className={'scan-logo'} />
       <Route exact path={ROUTES.home} render={() => <ChooseAddressPage onAccountDetails={showBadges} />} />
       <Route exact path={ROUTES.scanHome} render={() => <ChooseAddressPage onAccountDetails={showBadges} />} />
       <Route path={ROUTES.scan} component={AddressTokensPage} />
