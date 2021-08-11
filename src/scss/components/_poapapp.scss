@@ -25,10 +25,6 @@
   .header-events {
     clear: both;
 
-    h1 {
-      margin: 0 0 10px;
-    }
-
     p {
       margin-bottom: 20px;
     }
@@ -209,20 +205,22 @@
           display: flex;
           flex-direction: row;
           flex-wrap: wrap;
+          margin-left: -6px;
+
+          @media (min-width: $bp-mw) {
+            margin-left: -12px;
+          }
 
           .event-circle {
             width: 95px;
             height: 95px;
             border-radius: 50%;
             overflow: hidden;
-            margin: 0 12px 12px 0;
+            margin: 6px;
             background-color: white;
-            //-webkit-box-shadow: 0px 10px 30px -5px rgba($color-primary, 0.5);
-            //-moz-box-shadow: 0px 10px 30px -5px rgba($color-primary, 0.5);
-            //box-shadow: 0px 10px 30px -5px rgba($color-primary, 0.5);
 
             @media (min-width: $bp-mw) {
-              margin: 0 24px 24px 0;
+              margin: 12px;
             }
           }
         }
@@ -418,32 +416,6 @@
 
   .redeem-poaps-container {
     margin-top: 24px;
-  }
-
-  .event-circle {
-    margin: 10px !important;
-  }
-}
-
-.events-logos {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-
-  .event-circle {
-    width: 95px;
-    height: 95px;
-    border-radius: 50%;
-    overflow: hidden;
-    margin: 0 12px 12px 0;
-    background-color: $color-primary;
-    //-webkit-box-shadow: 0px 10px 30px -5px rgba($color-primary, 0.5);
-    //-moz-box-shadow: 0px 10px 30px -5px rgba($color-primary, 0.5);
-    //box-shadow: 0px 10px 30px -5px rgba($color-primary, 0.5);
-
-    @media (min-width: $bp-mw) {
-      margin: 0 24px 24px 0;
-    }
   }
 }
 

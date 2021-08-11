@@ -5,16 +5,6 @@ import { useToasts } from 'react-toast-notifications';
 import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 
-// libraries
-import {
-  RedditIcon,
-  RedditShareButton,
-  TelegramIcon,
-  TelegramShareButton,
-  TwitterIcon,
-  TwitterShareButton,
-} from 'react-share';
-
 // Helpers
 import { connectWallet, NETWORK } from '../poap-eth';
 import { getTokenInfoWithENS, postTokenMigration, TokenInfo } from '../api';
@@ -33,6 +23,8 @@ import { SubmitButton } from '../components/SubmitButton';
 import abi from '../abis/PoapDelegatedMint.json';
 import { TransactionReceipt } from 'web3-core';
 import { TxDetail } from '../components/TxDetail';
+import { useWindowWidth } from '@react-hook/window-size';
+import { reduceAddress } from '../lib/helpers';
 
 const CONTRACT_ADDRESS = process.env.REACT_APP_MINT_DELEGATE_CONTRACT;
 
@@ -48,17 +40,22 @@ export const TokenDetailPage: React.FC<RouteComponentProps<{
 
   const { addToast } = useToasts();
 
-  const submitMigration = (e: React.FormEvent<HTMLFormElement>) => {
+  const width = useWindowWidth();
+
+  const submitMigration = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!token) return;
     setMigrateInProcess(true);
-    postTokenMigration(parseInt(token.tokenId))
-      .then((result) => {
-        if (result) {
-          migrateToken(result.signature);
-        }
-      })
-      .catch(showErrorMessage);
+    try {
+      const result = await postTokenMigration(parseInt(token.tokenId));
+      if (result) {
+        await migrateToken(result.signature);
+      }
+    } catch {
+      showErrorMessage();
+    }
+
+    setMigrateInProcess(false);
   };
 
   const migrateToken = async (signature: string) => {
@@ -198,56 +195,37 @@ export const TokenDetailPage: React.FC<RouteComponentProps<{
     <>
       <div className="header-events token-page">
         <div className="container">
+          <div className="logo-event token-page">
+            <img src={event.image_url} alt="" />
+          </div>
           <h1>{event.name}</h1>
-          <p>
+          <div className="date-city-container">
+            <div className="date">{event.start_date}</div>
             {(event.city || event.country) && (
-              <>
+              <div>
                 {event.city ? `${event.city}, ` : ''}
                 {event.country}
-                <br />
-              </>
+              </div>
             )}
-            <b>{event.start_date}</b>
-          </p>
-          <div className="logo-event token-page">
-            {typeof event.image_url === 'string' && <img src={event.image_url} alt="Event" />}
           </div>
         </div>
       </div>
       <main id="site-main" role="main" className="main-events">
-        <div className="image-main">
-          <img src={HeaderShadowImg} alt="" className="mobile" />
-          <img src={HeaderShadowDesktopImg} alt="" className="desktop" />
-        </div>
         <div className="main-content">
           <div className="container claim-info">
             <div className="content-event">
-              <h2 className="collection">Collection</h2>
-              <p className={`wallet-number ${(ens && ens.valid) ? "ens":""}`}>
-                <Link to={`/scan/${address}`}>{address}</Link>
-              </p>
+              <h2>Collection</h2>
+              <div className={`wallet-number ${ens && ens.valid ? 'ens' : ''}`}>
+                <Link to={`/scan/${address}`}>
+                  {ens && ens.valid ? address : width < 500 ? reduceAddress(address) : address}
+                </Link>
+              </div>
               <h2>Brog on the interwebz</h2>
-              <ul className="social-icons">
-                <li>
-                  <TwitterShareButton
-                    url={window.location.toString()}
-                    title={`Look at my ${event.name} POAP NFT!`}
-                    via="poapxyz"
-                  >
-                    <TwitterIcon size={40} round iconBgStyle={{ fill: '#6534FF' }} />
-                  </TwitterShareButton>
-                </li>
-                <li>
-                  <TelegramShareButton url={window.location.toString()} title={`Look at my ${event.name} POAP NFT!`}>
-                    <TelegramIcon size={40} round iconBgStyle={{ fill: '#6534FF' }} />
-                  </TelegramShareButton>
-                </li>
-                <li>
-                  <RedditShareButton url={window.location.toString()} title={`Look at my ${event.name} POAP NFT!`}>
-                    <RedditIcon size={40} round iconBgStyle={{ fill: '#6534FF' }} />
-                  </RedditShareButton>
-                </li>
-              </ul>
+              <div className="communities-container">
+                <a href="https://twitter.com/poapxyz/" target="_blank" rel="noopener noreferrer" className="twitter" />
+                <a href="https://t.me/poapxyz" target="_blank" rel="noopener noreferrer" className="telegram" />
+                <a href="https://reddit.com/r/poap" target="_blank" rel="noopener noreferrer" className="reddit" />
+              </div>
             </div>
             <div className={'migration-section'}>
               {layer === LAYERS.layer2 && !migrationFinished && !txHash && (
