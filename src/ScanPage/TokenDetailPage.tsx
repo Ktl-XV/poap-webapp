@@ -202,14 +202,15 @@ export const TokenDetailPage: React.FC<RouteComponentProps<{
                 </div>
                 <h2>Brog on the interwebz</h2>
                 <div className="communities-container">
-                  <a
-                    href="https://twitter.com/poapxyz/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="twitter"
-                  />
-                  <a href="https://t.me/poapxyz" target="_blank" rel="noopener noreferrer" className="telegram" />
-                  <a href="https://reddit.com/r/poap" target="_blank" rel="noopener noreferrer" className="reddit" />
+                  <a href="https://twitter.com/poapxyz/" target="_blank" rel="noopener noreferrer" className="twitter">
+                    twitter
+                  </a>
+                  <a href="https://t.me/poapxyz" target="_blank" rel="noopener noreferrer" className="telegram">
+                    telegram
+                  </a>
+                  <a href="https://reddit.com/r/poap" target="_blank" rel="noopener noreferrer" className="reddit">
+                    reddit
+                  </a>
                 </div>
               </div>
               <div className={'migration-section'}>
