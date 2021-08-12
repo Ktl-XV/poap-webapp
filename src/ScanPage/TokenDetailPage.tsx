@@ -14,8 +14,6 @@ import { LAYERS } from '../lib/constants';
 
 // assets
 import EmptyBadge from '../images/empty-badge.svg';
-import HeaderShadowImg from '../images/header-shadow.svg';
-import HeaderShadowDesktopImg from '../images/header-shadow-desktop.svg';
 
 // utils
 import { useBodyClassName } from '../react-helpers';
@@ -37,6 +35,7 @@ export const TokenDetailPage: React.FC<RouteComponentProps<{
   const [migrationFinished, setMigrationFinished] = useState<boolean>(false);
   const [txHash, setTxHash] = useState<string>('');
   const [txReceipt, setTxReceipt] = useState<null | TransactionReceipt>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const { addToast } = useToasts();
 
@@ -140,119 +139,108 @@ export const TokenDetailPage: React.FC<RouteComponentProps<{
   useBodyClassName('poap-app event-page');
 
   useEffect(() => {
-    const fn = async () => {
-      const token = await getTokenInfoWithENS(match.params.tokenId);
-      setToken(token);
-    };
-    fn();
+    try {
+      fetchToken().then();
+    } catch (e) {
+      console.log(e);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [match]);
 
   useEffect(() => {
     if (txHash && web3) {
       const interval = setInterval(() => {
-        getReceipt();
+        getReceipt().then();
       }, 3000);
       return () => clearInterval(interval);
     }
   }, [txHash, txReceipt]); /* eslint-disable-line react-hooks/exhaustive-deps */
 
-  if (token == null) {
-    return (
-      <>
-        <div className="header-events token-page">
-          <div className="container">
-            <h1>Loading</h1>
-            <div className="logo-event token-page">
-              <img src={EmptyBadge} alt="Event" />
-            </div>
-          </div>
-        </div>
-        <main id="site-main" role="main" className="main-events">
-          <div className="image-main">
-            <img src={HeaderShadowImg} alt="" className="mobile" />
-            <img src={HeaderShadowDesktopImg} alt="" className="desktop" />
-          </div>
-          <div className="main-content">
-            <div className="container">
-              <div className="content-event">
-                <h2>Collection</h2>
-              </div>
-            </div>
-          </div>
-        </main>
-      </>
-    );
-  }
-
-  const { event, owner, layer, ens } = token;
-  let address = owner;
-
-  if (ens && ens.valid) {
-    address = ens.ens;
-  }
+  const fetchToken = async () => {
+    setLoading(true);
+    const token = await getTokenInfoWithENS(match.params.tokenId);
+    setToken(token);
+    setLoading(false);
+  };
 
   return (
     <>
       <div className="header-events token-page">
         <div className="container">
           <div className="logo-event token-page">
-            <img src={event.image_url} alt="" />
+            {loading && <img src={EmptyBadge} alt="loading" />}
+            {!loading && <img src={token?.event.image_url} alt="" />}
           </div>
-          <h1>{event.name}</h1>
-          <div className="date-city-container">
-            <div className="date">{event.start_date}</div>
-            {(event.city || event.country) && (
-              <div>
-                {event.city ? `${event.city}, ` : ''}
-                {event.country}
-              </div>
-            )}
-          </div>
+          <h1>{loading ? 'Loading...' : token?.event.name}</h1>
+          {!loading && (
+            <div className="date-city-container">
+              <div className="date">{token?.event.start_date}</div>
+              {(token?.event.city || token?.event.country) && (
+                <div>
+                  {token?.event.city ? `${token?.event.city}, ` : ''}
+                  {token?.event.country}
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
-      <main id="site-main" role="main" className="main-events">
-        <div className="main-content">
-          <div className="container claim-info">
-            <div className="content-event">
-              <h2>Collection</h2>
-              <div className={`wallet-number ${ens && ens.valid ? 'ens' : ''}`}>
-                <Link to={`/scan/${address}`}>
-                  {ens && ens.valid ? address : width < 500 ? reduceAddress(address) : address}
-                </Link>
+      {!loading && (
+        <main id="site-main" role="main" className="main-events">
+          <div className="main-content">
+            <div className="container claim-info">
+              <div className="content-event">
+                <h2>Collection</h2>
+                <div className={`wallet-number ${token?.ens && token?.ens.valid ? 'ens' : ''}`}>
+                  <Link to={`/scan/${token?.ens && token.ens.valid ? token.ens : token?.owner}`}>
+                    {token?.ens && token.ens.valid
+                      ? token?.ens
+                      : width < 500
+                      ? reduceAddress(token?.owner || '')
+                      : token?.owner}
+                  </Link>
+                </div>
+                <h2>Brog on the interwebz</h2>
+                <div className="communities-container">
+                  <a
+                    href="https://twitter.com/poapxyz/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="twitter"
+                  />
+                  <a href="https://t.me/poapxyz" target="_blank" rel="noopener noreferrer" className="telegram" />
+                  <a href="https://reddit.com/r/poap" target="_blank" rel="noopener noreferrer" className="reddit" />
+                </div>
               </div>
-              <h2>Brog on the interwebz</h2>
-              <div className="communities-container">
-                <a href="https://twitter.com/poapxyz/" target="_blank" rel="noopener noreferrer" className="twitter" />
-                <a href="https://t.me/poapxyz" target="_blank" rel="noopener noreferrer" className="telegram" />
-                <a href="https://reddit.com/r/poap" target="_blank" rel="noopener noreferrer" className="reddit" />
+              <div className={'migration-section'}>
+                {token?.layer === LAYERS.layer2 && !migrationFinished && !txHash && (
+                  <>
+                    <div className={'divider'} />
+                    <p>This POAP is currently on xDAI and it can be migrated to mainnet</p>
+                    <div>
+                      <form onSubmit={submitMigration}>
+                        <SubmitButton text={'Migrate POAP'} isSubmitting={migrateInProcess} canSubmit={true} />
+                      </form>
+                    </div>
+                  </>
+                )}
+                {token?.layer === LAYERS.layer2 && migrationFinished && (
+                  <p className={'success'}>POAP migrated successfully!</p>
+                )}
+                {txHash && <TxDetail hash={txHash} receipt={txReceipt} />}
+                {txReceipt && !txReceipt.status && (
+                  <>
+                    <div className={'divider'} />
+                    <div className={'text-info'} data-aos="fade-up">
+                      <p>It seems that your transaction failed. Please refresh the page</p>
+                    </div>
+                  </>
+                )}
               </div>
-            </div>
-            <div className={'migration-section'}>
-              {layer === LAYERS.layer2 && !migrationFinished && !txHash && (
-                <>
-                  <div className={'divider'} />
-                  <p>This POAP is currently on xDAI and it can be migrated to mainnet</p>
-                  <div>
-                    <form onSubmit={submitMigration}>
-                      <SubmitButton text={'Migrate POAP'} isSubmitting={migrateInProcess} canSubmit={true} />
-                    </form>
-                  </div>
-                </>
-              )}
-              {layer === LAYERS.layer2 && migrationFinished && <p className={'success'}>POAP migrated successfully!</p>}
-              {txHash && <TxDetail hash={txHash} receipt={txReceipt} />}
-              {txReceipt && !txReceipt.status && (
-                <>
-                  <div className={'divider'} />
-                  <div className={'text-info'} data-aos="fade-up">
-                    <p>It seems that your transaction failed. Please refresh the page</p>
-                  </div>
-                </>
-              )}
             </div>
           </div>
-        </div>
-      </main>
+        </main>
+      )}
     </>
   );
 };
