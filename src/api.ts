@@ -1,4 +1,5 @@
 import queryString from 'query-string';
+import { number } from 'yup';
 
 import { authClient } from './auth';
 
@@ -483,15 +484,15 @@ export async function postQrRequests(
 
   return authClient.isAuthenticated()
     ? secureFetch(`${API_BASE}/qr-requests`, {
-        method: 'POST',
-        body,
-        headers: { 'Content-Type': 'application/json' },
-      })
+      method: 'POST',
+      body,
+      headers: { 'Content-Type': 'application/json' },
+    })
     : fetchJson(`${API_BASE}/qr-requests`, {
-        method: 'POST',
-        body,
-        headers: { 'Content-Type': 'application/json' },
-      });
+      method: 'POST',
+      body,
+      headers: { 'Content-Type': 'application/json' },
+    });
 }
 
 export async function getActiveQrRequests(event_id?: number): Promise<ActiveQrRequest> {
@@ -724,24 +725,24 @@ export async function qrCodesRangeAssign(
 
   return isAdmin
     ? secureFetchNoResponse(`${API_BASE}/qr-code/range-assign`, {
-        method: 'PUT',
-        body: JSON.stringify({
-          numeric_id_min: from,
-          numeric_id_max: to,
-          event_id: eventId,
-        }),
-        headers: { 'Content-Type': 'application/json' },
-      })
+      method: 'PUT',
+      body: JSON.stringify({
+        numeric_id_min: from,
+        numeric_id_max: to,
+        event_id: eventId,
+      }),
+      headers: { 'Content-Type': 'application/json' },
+    })
     : fetchJsonNoResponse(`${API_BASE}/qr-code/range-assign`, {
-        method: 'PUT',
-        body: JSON.stringify({
-          numeric_id_min: from,
-          numeric_id_max: to,
-          event_id: eventId,
-          passphrase,
-        }),
-        headers: { 'Content-Type': 'application/json' },
-      });
+      method: 'PUT',
+      body: JSON.stringify({
+        numeric_id_min: from,
+        numeric_id_max: to,
+        event_id: eventId,
+        passphrase,
+      }),
+      headers: { 'Content-Type': 'application/json' },
+    });
 }
 
 export async function qrCodesListAssign(
@@ -790,22 +791,22 @@ export async function qrCodesSelectionUpdate(
 
   return isAdmin
     ? secureFetchNoResponse(`${API_BASE}/qr-code/update`, {
-        method: 'PUT',
-        body: JSON.stringify({
-          qr_code_ids: qrCodesIds,
-          event_id: eventId,
-        }),
-        headers: { 'Content-Type': 'application/json' },
-      })
+      method: 'PUT',
+      body: JSON.stringify({
+        qr_code_ids: qrCodesIds,
+        event_id: eventId,
+      }),
+      headers: { 'Content-Type': 'application/json' },
+    })
     : fetchJsonNoResponse(`${API_BASE}/qr-code/update`, {
-        method: 'PUT',
-        body: JSON.stringify({
-          qr_code_ids: qrCodesIds,
-          event_id: eventId,
-          passphrase,
-        }),
-        headers: { 'Content-Type': 'application/json' },
-      });
+      method: 'PUT',
+      body: JSON.stringify({
+        qr_code_ids: qrCodesIds,
+        event_id: eventId,
+        passphrase,
+      }),
+      headers: { 'Content-Type': 'application/json' },
+    });
 }
 
 export async function generateRandomCodes(event_id: number, amount: number, delegated_mint: boolean): Promise<void> {
@@ -918,6 +919,13 @@ export interface PaginatedCheckouts {
   checkouts: Checkout[];
 }
 
+export interface PaginatedEvent {
+  limit: number;
+  offset: number;
+  total: number;
+  items: PoapEvent[];
+}
+
 type CheckoutRedeemResponse = {
   qr_hash: string;
 };
@@ -1017,7 +1025,7 @@ export type Delivery = {
   metadata_title: string;
   metadata_description: string;
   event_ids: string;
-  approved?: boolean|null;
+  approved?: boolean | null;
   reviewed_by?: string;
   reviewed_date?: Date;
 };
@@ -1394,4 +1402,18 @@ export async function validateEventAndSecretCode(event_id: number, secret_code: 
   } catch (e) {
     return false;
   }
+}
+
+export async function getPaginatedEvents(name?: string, offset?: number, expired?: boolean, limit?: number, sort?: SortCondition): Promise<PaginatedEvent> {
+  const params = queryString.stringify({
+    name,
+    offset,
+    expired,
+    limit,
+    sort_dir: sort?.sort_direction,
+    sort_field: sort?.sort_by
+  });
+  const url = `${API_BASE}/paginated-events?${params}`;
+  const fetcher = authClient.isAuthenticated() ? secureFetch : fetchJson;
+  return fetcher(url);
 }
