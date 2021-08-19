@@ -11,7 +11,6 @@ import { ROUTES } from '../../lib/constants';
 import { Loading } from '../../components/Loading';
 import FilterButton from '../../components/FilterButton';
 import FilterReactSelect from '../../components/FilterReactSelect';
-import FilterSelect from '../../components/FilterSelect';
 import ReactPaginate from 'react-paginate';
 
 /* Assets */
@@ -29,7 +28,6 @@ const DeliveriesList = () => {
   const [page, setPage] = useState<number>(0);
   const [total, setTotal] = useState<number>(0);
   const [limit, setLimit] = useState<number>(10);
-  const [activeStatus, setActiveStatus] = useState<boolean | null>(null);
   const [selectedEvent, setSelectedEvent] = useState<number | undefined>(undefined);
   const [events, setEvents] = useState<PoapEvent[]>([]);
   const [deliveries, setDeliveries] = useState<Delivery[]>([]);
@@ -47,13 +45,13 @@ const DeliveriesList = () => {
   useEffect(() => {
     setPage(0);
     fetchDeliveries();
-  }, [selectedEvent, activeStatus, limit]); /* eslint-disable-line react-hooks/exhaustive-deps */
+  }, [selectedEvent, limit]); /* eslint-disable-line react-hooks/exhaustive-deps */
 
   /* Data functions */
   const fetchDeliveries = async () => {
     setIsFetching(true);
     try {
-      const response = await getDeliveries(limit, page * limit, selectedEvent, null, activeStatus);
+      const response = await getDeliveries(limit, page * limit, selectedEvent, null, null);
       if (response) {
         setDeliveries(response.deliveries);
         setTotal(response.total);
@@ -87,11 +85,6 @@ const DeliveriesList = () => {
   const handleSelectChange = (option: OptionTypeBase): void => {
     setSelectedEvent(option.value);
   };
-  const handleStatusChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>): void => {
-    const { value } = e.target;
-    let finalValue = value === '' ? null : value === 'true';
-    setActiveStatus(finalValue);
-  };
   const handlePageChange = (obj: PaginateAction) => setPage(obj.selected);
 
   /* UI Manipulation */
@@ -120,15 +113,6 @@ const DeliveriesList = () => {
         <div className={'filter col-md-4 col-xs-12'}>
           <div className="filter-option">
             <FilterReactSelect options={eventOptions} onChange={handleSelectChange} placeholder={'Filter by Event'} />
-          </div>
-        </div>
-        <div className={'filter col-md-3 col-xs-6'}>
-          <div className={'filter-group'}>
-            <FilterSelect handleChange={handleStatusChange}>
-              <option value="">Filter by status</option>
-              <option value="true">Active</option>
-              <option value="false">Inactive</option>
-            </FilterSelect>
           </div>
         </div>
         <div className={'col-md-2'} />
