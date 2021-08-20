@@ -115,7 +115,7 @@ const DeliveriesList = () => {
             <FilterReactSelect options={eventOptions} onChange={handleSelectChange} placeholder={'Filter by Event'} />
           </div>
         </div>
-        <div className={'col-md-2'} />
+        <div className={'col-md-5'} />
         <div className={'filter col-md-3 col-xs-6 new-button'}>
           <Link to={ROUTES.deliveries.newForm.path}>
             <FilterButton text="Create new" />
