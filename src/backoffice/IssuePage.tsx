@@ -10,19 +10,20 @@ import { IssueForEventFormValueSchema, IssueForUserFormValueSchema } from '../li
 import { getEvents, getSigners, mintEventToManyUsers, AdminAddress, PoapEvent, mintUserToManyEvents } from '../api';
 /* Components */
 import { SubmitButton } from '../components/SubmitButton';
-import FormSelect from '../components/FormSelect';
 import { Loading } from '../components/Loading';
 import Transaction from '../components/Transaction';
+import { FormEventSelect } from 'components/EventSelect';
 
 interface IssueForEventPageState {
   events: PoapEvent[];
   initialValues: IssueForEventFormValues;
   signers: AdminAddress[];
   queueMessage: string;
+  loaded: boolean;
 }
 
 interface IssueForEventFormValues {
-  eventId: number;
+  eventId?: OptionTypeBase;
   addressList: string;
   signer: string;
 }
@@ -31,16 +32,15 @@ export class IssueForEventPage extends React.Component<{}, IssueForEventPageStat
   state: IssueForEventPageState = {
     events: [],
     initialValues: {
-      eventId: 0,
       addressList: '',
       signer: '',
     },
     signers: [],
     queueMessage: '',
+    loaded: false,
   };
 
   async componentDidMount() {
-    const events = await getEvents();
     const signers = await getSigners();
 
     const signer = signers.length > 0 ? signers[0].signer : '';
@@ -48,13 +48,14 @@ export class IssueForEventPage extends React.Component<{}, IssueForEventPageStat
     this.setState((old) => {
       return {
         ...old,
-        events,
+        //events,
         initialValues: {
           ...old.initialValues,
-          eventId: events[0].id,
+          // eventId: events[0].id,
           signer,
         },
         signers,
+        loaded: true
       };
     });
   }
@@ -91,7 +92,7 @@ export class IssueForEventPage extends React.Component<{}, IssueForEventPageStat
     try {
       actions.setStatus(null);
       this.setState({ queueMessage: '' });
-      const response = await mintEventToManyUsers(values.eventId, addresses, values.signer);
+      const response = await mintEventToManyUsers(values.eventId?.value, addresses, values.signer);
       this.setState({ queueMessage: response.queue_uid });
       actions.setStatus({ ok: true });
     } catch (err) {
@@ -105,15 +106,9 @@ export class IssueForEventPage extends React.Component<{}, IssueForEventPageStat
   };
 
   render() {
-    let { events } = this.state;
-    if (events.length === 0) {
+    if (!this.state.loaded) {
       return <Loading />;
     }
-
-    const eventOptions = events.map((event) => {
-      const label = `${event.name ? event.name : 'No name'} (${event.fancy_id}) - ${event.year}`;
-      return { value: event.id, label: label };
-    });
 
     return (
       <div className={'bk-container'}>
@@ -128,9 +123,8 @@ export class IssueForEventPage extends React.Component<{}, IssueForEventPageStat
                 <div className="bk-form-row">
                   <label htmlFor="eventId">Choose Event:</label>
                   <Field
-                    component={FormSelect}
+                    component={FormEventSelect}
                     name={'eventId'}
-                    options={eventOptions}
                     placeholder={'Select an event'}
                   />
                   <ErrorMessage name="eventId" component="p" className="bk-error" />
@@ -149,7 +143,7 @@ export class IssueForEventPage extends React.Component<{}, IssueForEventPageStat
                       />
                     )}
                   />
-                  {}
+                  { }
                   <ErrorMessage name="addressList" component="p" className="bk-error" />
                   <br />
                 </div>
@@ -157,9 +151,8 @@ export class IssueForEventPage extends React.Component<{}, IssueForEventPageStat
                   <label htmlFor="signer">Choose Address:</label>
                   <Field name="signer" component="select">
                     {this.state.signers.map((signer) => {
-                      const label = `${signer.id} - ${signer.signer} (${signer.role}) - Pend: ${
-                        signer.pending_tx
-                      } - Gas: ${convertToGWEI(signer.gas_price)}`;
+                      const label = `${signer.id} - ${signer.signer} (${signer.role}) - Pend: ${signer.pending_tx
+                        } - Gas: ${convertToGWEI(signer.gas_price)}`;
                       return (
                         <option key={signer.id} value={signer.signer}>
                           {label}
@@ -271,7 +264,6 @@ export class IssueForUserPage extends React.Component<{}, IssueForUserPageState>
             name={'event'}
             // value={getValue()}
             onChange={this.onSelectChange}
-            options={eventOptions}
             placeholder={'Select any amount of events'}
             className={'rselect'}
             isMulti
@@ -304,9 +296,8 @@ export class IssueForUserPage extends React.Component<{}, IssueForUserPageState>
                   <label htmlFor="signer">Choose Address:</label>
                   <Field name="signer" component="select">
                     {signers.map((signer) => {
-                      const label = `${signer.id} - ${signer.signer} (${signer.role}) - Pend: ${
-                        signer.pending_tx
-                      } - Gas: ${convertToGWEI(signer.gas_price)}`;
+                      const label = `${signer.id} - ${signer.signer} (${signer.role}) - Pend: ${signer.pending_tx
+                        } - Gas: ${convertToGWEI(signer.gas_price)}`;
                       return (
                         <option key={signer.id} value={signer.signer}>
                           {label}
