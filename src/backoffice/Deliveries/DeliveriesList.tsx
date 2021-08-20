@@ -160,7 +160,7 @@ const DeliveriesList = () => {
                         try {
                           let _id = parseInt(id, 10);
                           let event = events.find((e) => e.id === _id);
-                          if (event) return event.name.substr(0, 20) + `${i !== delivery.event_ids.split(',').length-1 ? '; ' : ''}`;
+                          if (event) return event.name.substr(0, 20) + ` (${_id})${i !== delivery.event_ids.split(',').length-1 ? '; ' : ''}`;
                         } catch (e) {
                           console.log(e);
                         }

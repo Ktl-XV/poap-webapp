@@ -24,6 +24,7 @@ import { EventField } from '../EventsPage';
 import { Loading } from '../../components/Loading';
 import { authClient } from '../../auth';
 import { ROUTES } from '../../lib/constants';
+import { useAsyncDebounce } from 'react-table';
 
 /* Types */
 type DeliveryFormType = {
@@ -369,11 +370,12 @@ const DeliveryForm: FC<RouteComponentProps> = (props) => {
           }
         }}
       >
-        {({ values, isSubmitting}) => {
+        {({ values, isSubmitting, isValid, errors, submitCount}) => {
           const addressPlaceholder = `address/ENS;id1,id2,id3   or   address/ENS (for all events)`;
 
           return (
             <><Form className={'delivery-admin-form'}>
+              <SubmissionErrorToast submitCount={submitCount} addToast={addToast} errors={errors} isValid={isValid} isSubmitting={isSubmitting} />
               <h2>{isEdition ? 'Edit' : 'Create'} Delivery</h2>
 
               <div>
@@ -537,7 +539,7 @@ const DeliveryForm: FC<RouteComponentProps> = (props) => {
                 </div>
               )}
               <div className={'col-md-12'}>
-                <SubmitButton text="Submit" isSubmitting={isSubmitting} canSubmit={true} />
+                <SubmitButton text={isEdition ? 'Save changes' : 'Create delivery'} isSubmitting={isSubmitting} type='submit' canSubmit={true} />
               </div>
             </Form>
             {isEdition && addresses && events && <AddressesList
@@ -570,6 +572,27 @@ const IDandCodeFields: FC<IDandCodeFieldsProps> = ({isEdition, length}) => {
       })}
     </>
   )
+}
+
+// @ts-ignore
+const SubmissionErrorToast = ({ submitCount, isValid, isSubmitting, errors, addToast }) => {
+  const toastErrorDebounced = useAsyncDebounce(() => {
+    let error_values = Object.values(errors)
+    let error_values_flat: any[] = []
+    error_values.forEach(v => Array.isArray(v) ? error_values_flat.push(...v) : error_values_flat.push(v))
+    error_values_flat = error_values_flat.map(v => v+'. ')
+    console.log(error_values_flat)
+    if (submitCount > 0 && !isValid) {
+      addToast(error_values_flat, {
+        appearance: 'error',
+        autoDismiss: false,
+      })
+    }
+  }, 500)
+  useEffect(() => {
+    toastErrorDebounced()
+  }, [submitCount, isSubmitting, toastErrorDebounced]);
+  return null;
 }
 
 const IDandCodeField = ({isEdition = false, fieldId = -1}) => {
