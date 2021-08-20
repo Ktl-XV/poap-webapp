@@ -1,7 +1,7 @@
 import React, { FC, useState, useEffect, useMemo } from 'react';
 import { generatePath, RouteComponentProps, useHistory } from 'react-router-dom';
-import { useToasts } from 'react-toast-notifications';
-import { Formik, Form, FormikActions } from 'formik';
+import { AddToast, useToasts } from 'react-toast-notifications';
+import { Formik, Form, FormikActions, FormikErrors } from 'formik';
 import delve from 'dlv';
 
 /* Helpers */
@@ -347,6 +347,9 @@ const DeliveryForm: FC<RouteComponentProps> = (props) => {
                       appearance: 'error',
                       autoDismiss: true,
                     });
+                    if (e.toString().includes('Incorrect Edit Code')) {
+                      edit_codes.forEach((v, i) => actions.setFieldError(`edit_codes[${i}]`, 'Incorrect edit code'))
+                    }
                     actions.setSubmitting(false);
                   });
                 } else {
@@ -574,27 +577,6 @@ const IDandCodeFields: FC<IDandCodeFieldsProps> = ({isEdition, length}) => {
   )
 }
 
-// @ts-ignore
-const SubmissionErrorToast = ({ submitCount, isValid, isSubmitting, errors, addToast }) => {
-  const toastErrorDebounced = useAsyncDebounce(() => {
-    let error_values = Object.values(errors)
-    let error_values_flat: any[] = []
-    error_values.forEach(v => Array.isArray(v) ? error_values_flat.push(...v) : error_values_flat.push(v))
-    error_values_flat = error_values_flat.map(v => v+'. ')
-    console.log(error_values_flat)
-    if (submitCount > 0 && !isValid) {
-      addToast(error_values_flat, {
-        appearance: 'error',
-        autoDismiss: false,
-      })
-    }
-  }, 500)
-  useEffect(() => {
-    toastErrorDebounced()
-  }, [submitCount, isSubmitting, toastErrorDebounced]);
-  return null;
-}
-
 const IDandCodeField = ({isEdition = false, fieldId = -1}) => {
   return (
     <div>
@@ -606,6 +588,32 @@ const IDandCodeField = ({isEdition = false, fieldId = -1}) => {
       </div>
     </div>
   )
+}
+
+type SubmissionErrorToastProps = {
+  submitCount: number;
+  isValid: boolean;
+  isSubmitting: boolean;
+  errors: FormikErrors<DeliveryFormType>;
+  addToast: AddToast;
+};
+const SubmissionErrorToast: FC<SubmissionErrorToastProps> = ({ submitCount, isValid, isSubmitting, errors, addToast }) => {
+  const toastErrorDebounced = useAsyncDebounce(() => {
+    let error_values = Object.values(errors)
+    let error_values_flat: any[] = []
+    error_values.forEach(v => Array.isArray(v) ? error_values_flat.push(...v) : error_values_flat.push(v))
+    error_values_flat = error_values_flat.map(v => v+'. ')
+    if (submitCount > 0 && !isValid) {
+      addToast(error_values_flat, {
+        appearance: 'error',
+        autoDismiss: false,
+      })
+    }
+  }, 500)
+  useEffect(() => {
+    toastErrorDebounced()
+  }, [submitCount, isSubmitting, toastErrorDebounced]);
+  return null;
 }
 
 export default DeliveryForm;

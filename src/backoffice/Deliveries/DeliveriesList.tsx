@@ -99,7 +99,7 @@ const DeliveriesList = () => {
   const tableHeaders = (
     <div className={'row table-header visible-md'}>
       <div className={'col-md-3'}>Name</div>
-      <div className={'col-md-5'}>Events</div>
+      <div className={'col-md-5'}>Event/s</div>
       <div className={'col-md-2'}>URL</div>
       <div className={'col-md-1 center'}>Active</div>
       <div className={'col-md-1'} />
@@ -154,7 +154,7 @@ const DeliveriesList = () => {
                   </div>
 
                   <div className={'col-md-5 col-xs-12 ellipsis'}>
-                    <span className={'visible-sm'}>Events: </span>
+                    <span className={'visible-sm'}>Event/s: </span>
                     {delivery.event_ids.split(',').map((id, i) => {
                       if (events) {
                         try {
