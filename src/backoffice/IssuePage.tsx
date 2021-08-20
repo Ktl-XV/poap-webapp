@@ -12,10 +12,9 @@ import { getEvents, getSigners, mintEventToManyUsers, AdminAddress, PoapEvent, m
 import { SubmitButton } from '../components/SubmitButton';
 import { Loading } from '../components/Loading';
 import Transaction from '../components/Transaction';
-import { FormEventSelect } from 'components/EventSelect';
+import EventSelect, { FormEventSelect } from 'components/EventSelect';
 
 interface IssueForEventPageState {
-  events: PoapEvent[];
   initialValues: IssueForEventFormValues;
   signers: AdminAddress[];
   queueMessage: string;
@@ -30,7 +29,6 @@ interface IssueForEventFormValues {
 
 export class IssueForEventPage extends React.Component<{}, IssueForEventPageState> {
   state: IssueForEventPageState = {
-    events: [],
     initialValues: {
       addressList: '',
       signer: '',
@@ -48,10 +46,8 @@ export class IssueForEventPage extends React.Component<{}, IssueForEventPageStat
     this.setState((old) => {
       return {
         ...old,
-        //events,
         initialValues: {
           ...old.initialValues,
-          // eventId: events[0].id,
           signer,
         },
         signers,
@@ -125,7 +121,7 @@ export class IssueForEventPage extends React.Component<{}, IssueForEventPageStat
                   <Field
                     component={FormEventSelect}
                     name={'eventId'}
-                    placeholder={'Select an event'}
+                    placeholder={'Please, enter the event name'}
                   />
                   <ErrorMessage name="eventId" component="p" className="bk-error" />
                 </div>
@@ -175,7 +171,6 @@ export class IssueForEventPage extends React.Component<{}, IssueForEventPageStat
 }
 
 interface IssueForUserPageState {
-  events: PoapEvent[];
   initialValues: IssueForUserFormValues;
   signers: AdminAddress[];
   queueMessage: string;
@@ -189,7 +184,6 @@ interface IssueForUserFormValues {
 
 export class IssueForUserPage extends React.Component<{}, IssueForUserPageState> {
   state: IssueForUserPageState = {
-    events: [],
     initialValues: {
       address: '',
       signer: '',
@@ -200,12 +194,11 @@ export class IssueForUserPage extends React.Component<{}, IssueForUserPageState>
   };
 
   async componentDidMount() {
-    const events = await getEvents();
     const signers = await getSigners();
 
     const signer = signers.length > 0 ? signers[0].signer : '';
 
-    this.setState({ events, signers, initialValues: { ...this.state.initialValues, signer } });
+    this.setState({ signers, initialValues: { ...this.state.initialValues, signer } });
   }
 
   onSelectChange = (value: ValueType<OptionTypeBase>): void => {
@@ -248,19 +241,13 @@ export class IssueForUserPage extends React.Component<{}, IssueForUserPageState>
   };
 
   render() {
-    let { events, signers, queueMessage, initialValues } = this.state;
-    if (events.length === 0) {
-      return <div className="bk-msg-error">No Events</div>;
-    }
-
-    let eventOptions: OptionTypeBase[] = [];
-    if (events) eventOptions = this.parseEvents(events);
+    let { signers, queueMessage, initialValues } = this.state;
 
     return (
       <div className={'bk-container'}>
         <div className="bk-form-row">
           <label htmlFor="event">Events</label>
-          <Select
+          <EventSelect
             name={'event'}
             // value={getValue()}
             onChange={this.onSelectChange}
