@@ -1,15 +1,13 @@
-import React, { useState, useCallback } from 'react';
-import { Formik, Form } from 'formik';
-import classNames from 'classnames';
+import React, { useCallback } from 'react';
+
+import AddressInput from '../components/AddressInput';
 
 /* Hooks */
 import { useToggleState } from '../react-helpers';
 
 /* Helpers */
 import { connectWallet } from '../poap-eth';
-import { resolveENS, getENSFromAddress } from '../api';
-import { isValidAddress, isValidEmail } from '../lib/helpers';
-import { AddressOrEmailSchema } from '../lib/schemas';
+import { getENSFromAddress } from '../api';
 
 type ChooseAddressPageProps = {
   onAccountDetails: (addressOrENS: string, address: string) => void;
@@ -17,18 +15,6 @@ type ChooseAddressPageProps = {
 
 type LoginButtonProps = {
   onAddress: (addressOrENS: string, address: string) => void;
-};
-
-type AddressInputProps = {
-  onAddress: (addressOrENS: string, address: string) => void;
-};
-
-type AddressFormValues = {
-  address: string;
-};
-
-const initialValues: AddressFormValues = {
-  address: '',
 };
 
 const LoginButton: React.FC<LoginButtonProps> = ({ onAddress }) => {
@@ -59,65 +45,6 @@ const LoginButton: React.FC<LoginButtonProps> = ({ onAddress }) => {
   );
 };
 
-const AddressInput: React.FC<AddressInputProps> = ({ onAddress }) => {
-  const [ensError, setEnsError] = useState(false);
-  const [working, setWorking] = useState(false);
-
-  const onSubmit = async ({ address }: AddressFormValues) => {
-    setWorking(true);
-
-    if (isValidAddress(address)) {
-      try {
-        const addressResponse = await getENSFromAddress(address);
-        onAddress(addressResponse.valid ? addressResponse.ens : address, address);
-      } catch (e) {
-        onAddress(address, address);
-      }
-    } else if (isValidEmail(address)) {
-      onAddress(address, address);
-    } else {
-      setEnsError(false);
-      const ensResponse = await resolveENS(address);
-
-      if (ensResponse.valid) {
-        onAddress(address, ensResponse.ens);
-      } else {
-        setEnsError(true);
-      }
-    }
-
-    setWorking(false);
-  };
-
-  return (
-    <Formik onSubmit={onSubmit} initialValues={initialValues} validationSchema={AddressOrEmailSchema}>
-      {({ values, errors, setFieldValue }) => (
-        <Form className="login-form">
-          <input
-            type="text"
-            id="address"
-            name="address"
-            placeholder="matoken.eth or alison@google.com"
-            onChange={(e) => setFieldValue('address', e.target.value, true)}
-            autoComplete="off"
-            value={values.address}
-            className={classNames(ensError && 'error')}
-          />
-          {ensError && <p className="text-error">Invalid ENS name</p>}
-          <input
-            type="submit"
-            id="submit"
-            value={working ? '' : 'Display Badges'}
-            disabled={Boolean(errors.address) || !values.address}
-            className={classNames(working && 'loading')}
-            name="submit"
-          />
-        </Form>
-      )}
-    </Formik>
-  );
-};
-
 export const ChooseAddressPage: React.FC<ChooseAddressPageProps> = ({ onAccountDetails }) => {
   const [enterByHand, toggleEnterByHand] = useToggleState(false);
 
@@ -131,7 +58,7 @@ export const ChooseAddressPage: React.FC<ChooseAddressPageProps> = ({ onAccountD
           </p>
           <br />
           {enterByHand ? (
-            <AddressInput onAddress={onAccountDetails} />
+            <AddressInput onAddressButton={onAccountDetails} allowEmail={true} buttonText="Display Badges" />
           ) : (
             <>
               <LoginButton onAddress={onAccountDetails} />
